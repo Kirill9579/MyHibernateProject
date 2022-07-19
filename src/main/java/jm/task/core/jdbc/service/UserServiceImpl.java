@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
         ps.setInt(3, age);
         ps.executeUpdate();
         ps.close();
+        System.out.println("User с именем -" + name + "добавлен в базу данных ");
     }
 
     public void removeUserById(long id) throws SQLException {
