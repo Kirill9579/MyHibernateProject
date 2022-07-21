@@ -31,9 +31,8 @@ public class UserDaoJDBCImpl implements UserDao {
     public void createUsersTable() throws SQLException {
 
         try {
-            pStatement = connectionDB.getConn().prepareStatement(DROP_TABLE);
-            pStatement.executeUpdate();
-            pStatement.executeUpdate(CREATE_TABLE);
+            dropUsersTable();
+            pStatement = connectionDB.getConn().prepareStatement(CREATE_TABLE);
         } catch (SQLException e) {
             System.err.println("Creat users table exception " + e);
         } finally {
@@ -58,7 +57,6 @@ public class UserDaoJDBCImpl implements UserDao {
             pStatement.setString(2, lastName);
             pStatement.setInt(3, age);
             pStatement.executeUpdate();
-            pStatement.close();
             System.out.println("User с именем -" + name + " добавлен в базу данных ");
         } catch (SQLException e) {
             System.err.println("Save users table exception " + e);
