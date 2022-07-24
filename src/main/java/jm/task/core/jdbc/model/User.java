@@ -1,22 +1,24 @@
 package jm.task.core.jdbc.model;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
+import jakarta.persistence.*;
+import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
+
+import java.io.Serializable;
 import java.util.Objects;
 
-@Table
-public class User {
+@Entity
+@Table(name = "users")
+public class User implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long id;
-
-    @Column
+    @Column(name = "NAME")
     private String name;
-
-    @Column
+    @Column(name = "LAST_NAME")
     private String lastName;
-
-    @Column
+    @Column(name = "AGE")
     private Byte age;
 
     public User() {
@@ -63,11 +65,10 @@ public class User {
 
     @Override
     public String toString() {
-        return "User \n" +
-                "id = " + id +
-                ", name: " + name +
-                ", lastName: " + lastName +
-                ", age = " + age;
+        return "\nПользователь: " +
+                name +
+                " " + lastName +
+                ", возраст = " + age;
     }
 
     @Override

@@ -3,6 +3,7 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private final Util connectionDB;
+    private final Connection connectionDB;
     private PreparedStatement pStatement;
     private final String CREATE_TABLE = "CREATE TABLE users " +
             "(ID int primary key AUTO_INCREMENT," +
@@ -25,14 +26,15 @@ public class UserDaoJDBCImpl implements UserDao {
 
 
     public UserDaoJDBCImpl() {
-        connectionDB = new Util();
+        connectionDB = Util.getConn();
     }
 
     public void createUsersTable() throws SQLException {
 
         try {
             dropUsersTable();
-            pStatement = connectionDB.getConn().prepareStatement(CREATE_TABLE);
+            pStatement = connectionDB.prepareStatement(CREATE_TABLE);
+            pStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Creat users table exception " + e);
         } finally {
@@ -42,7 +44,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() throws SQLException {
         try {
-            pStatement = connectionDB.getConn().prepareStatement(DROP_TABLE);
+            pStatement = connectionDB.prepareStatement(DROP_TABLE);
+            pStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Drop users table exception " + e);
         } finally {
@@ -52,12 +55,12 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) throws SQLException {
         try {
-            pStatement = connectionDB.getConn().prepareStatement(SAVE_USER);
+            pStatement = connectionDB.prepareStatement(SAVE_USER);
             pStatement.setString(1, name);
             pStatement.setString(2, lastName);
             pStatement.setInt(3, age);
             pStatement.executeUpdate();
-            System.out.println("User с именем -" + name + " добавлен в базу данных ");
+            System.out.println("Пользователь с именем - " + name + " добавлен в базу данных ");
         } catch (SQLException e) {
             System.err.println("Save users table exception " + e);
         } finally {
@@ -67,7 +70,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void removeUserById(long id) throws SQLException {
         try {
-            pStatement = connectionDB.getConn().prepareStatement(REMOVE_USER);
+            pStatement = connectionDB.prepareStatement(REMOVE_USER);
             pStatement.setInt(1, (int) id);
             pStatement.executeUpdate();
         } catch (SQLException e) {
@@ -80,7 +83,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() throws SQLException {
         List<User> userList = new ArrayList<>();
         try {
-            pStatement = connectionDB.getConn().prepareStatement(SELECT_ALL);
+            pStatement = connectionDB.prepareStatement(SELECT_ALL);
             ResultSet rs = pStatement.executeQuery();
             while (rs.next()) {
                 userList.add(new User(rs.getString(2), rs.getString(3), rs.getByte(4)));
@@ -95,7 +98,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() throws SQLException {
         try {
-            pStatement = connectionDB.getConn().prepareStatement(CLEAN_USERS_TABLE);
+            pStatement = connectionDB.prepareStatement(CLEAN_USERS_TABLE);
             pStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Clean users exception " + e);
@@ -103,4 +106,5 @@ public class UserDaoJDBCImpl implements UserDao {
             pStatement.close();
         }
     }
+
 }
