@@ -24,7 +24,7 @@ public class Main {
             users.saveUser(alex.getName(), alex.getLastName(), alex.getAge());
             users.saveUser(petr.getName(), petr.getLastName(), petr.getAge());
             System.out.println(users.getAllUsers());
-            users.dropUsersTable();
+//            users.dropUsersTable();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
